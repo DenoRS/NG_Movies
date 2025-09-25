@@ -48,6 +48,9 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":components"))
+    implementation(project(":theming"))
+
     implementation(libs.javax.inject)
 
     // Compose
