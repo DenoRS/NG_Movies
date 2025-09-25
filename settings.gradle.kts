@@ -23,3 +23,5 @@ rootProject.name = "NG Movies"
 include(":app")
 include(":domain")
 include(":data")
+include(":theming")
+include(":components")

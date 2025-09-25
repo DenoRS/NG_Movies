@@ -1,4 +1,4 @@
-package ie.rubberduck.ngmovies.ui.theme
+package ie.rubberduck.theming.theme
 
 import androidx.compose.ui.graphics.Color
 
