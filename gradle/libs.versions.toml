@@ -2,10 +2,16 @@
 agp = "8.12.0"
 kotlin = "2.2.0"
 coreKtx = "1.13.1"
+
 accompanist = "0.37.0"
+coil = "3.3.0"
 
 coroutinesTest = "1.10.2"
+espresso-core = "3.7.0"
 junit = "5.10.0"
+junit-jupiter = "5.10.0"
+junit-vintage = "5.10.0"
+junit-ktx = "1.1.5"
 mockk = "1.14.5"
 turbine = "1.2.1"
 
@@ -15,14 +21,9 @@ camerax = "1.5.0-alpha04"
 compose-bom = "2024.12.01"
 compoes-animation = "1.7.6"
 compoes-navigation = "2.8.5"
-#core-ktx = "1.13.1"
 dagger-compiler = "2.56.2"
 dagger-hilt = "2.56.2"
 dagger = "2.56.2"
-espresso-core = "3.7.0"
-junit-jupiter = "5.10.0"
-junit-vintage = "5.10.0"
-junit-ktx = "1.1.5"
 kotlinx-serialization-json = "1.6.2"
 kotlinx-coroutines = "1.10.2"
 ktor = "2.3.12"
@@ -53,6 +54,10 @@ camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = 
 camera-video = { module = "androidx.camera:camera-video", version.ref = "camerax" }
 camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
 camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "camerax" }
+
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+
 #core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
 dagger-android = { group = "com.google.dagger", name = "dagger-android", version.ref = "dagger" }
