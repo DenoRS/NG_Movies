@@ -13,17 +13,18 @@ import ie.rubberduck.ngmovies.features.dashboard.MovieUiModel
 
 @Composable
 fun MovieRow(
-    movies: List<MovieUiModel>
+    movies: List<MovieUiModel>,
+    onMovieClick: (Int) -> Unit,
 ) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         items(movies) { movie ->
             MovieCard(
-                imageUrl = ApiConfig.IMAGE_BASE_URL + movie.posterPath,
+                imageUrl = ApiConfig.IMAGE_BASE_URL_ORIGINAL + movie.posterPath,
                 title = movie.title,
                 rating = movie.voteAverage.roundTo1Decimal().toString(),
-                onClick = {},
+                onClick = { onMovieClick(movie.id) },
             )
         }
     }
@@ -32,6 +33,7 @@ fun MovieRow(
 
 private val sampleMoviesList = List(6) { index ->
     MovieUiModel(
+        id = 1,
         posterPath = "https://dummyimage.com/250x250/cccccc/000000.png&text=Hello there $index",
         title = "Movie #$index",
         releaseDate = "25-09-2025",
@@ -45,6 +47,9 @@ private val sampleMoviesList = List(6) { index ->
 @Composable
 private fun MovieRowPreview() {
     MaterialTheme {
-        MovieRow(movies = sampleMoviesList)
+        MovieRow(
+            movies = sampleMoviesList,
+            onMovieClick = {}
+        )
     }
 }
