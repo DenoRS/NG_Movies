@@ -26,4 +26,12 @@ interface MovieApi {
         @Path("movie_id") movieId: Int,
         @Query("language") language: String = "en-US"
     ): MovieDetailsResponseDto
+
+    @GET("search/movie")
+    suspend fun searchMovies(
+        @Query("query") query: String,
+        @Query("language") language: String = "en-US",
+        @Query("include_adult") includeAdult: Boolean = false,
+        @Query("page") page: Int = 1
+    ): MovieResponseDto
 }

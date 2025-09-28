@@ -4,6 +4,7 @@ import ie.rubberduck.data.remote.api.MovieApi
 import ie.rubberduck.data.remote.dto.MovieDetailsResponseDto
 import ie.rubberduck.data.remote.dto.MovieDto
 import ie.rubberduck.data.remote.dto.MovieResponseDto
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class MovieClientImpl @Inject constructor(
@@ -19,5 +20,7 @@ class MovieClientImpl @Inject constructor(
     override suspend fun getMovieDetails(movieId: Int): MovieDetailsResponseDto =
         api.getMovieDetails(movieId)
 
+    override suspend fun searchMovies(query: String): MovieResponseDto =
+        api.searchMovies(query)
 
 }

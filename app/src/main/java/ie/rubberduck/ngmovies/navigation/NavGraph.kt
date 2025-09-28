@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ie.rubberduck.ngmovies.features.dashboard.DashboardScreen
 import ie.rubberduck.ngmovies.features.details.DetailsScreen
+import ie.rubberduck.ngmovies.features.search.SearchScreen
 
 @Composable
 fun NavGraph(
@@ -19,6 +20,9 @@ fun NavGraph(
             DashboardScreen(
                 onMovieClick = { movieId ->
                     navController.navigate("details/$movieId")
+                },
+                onSearchClick = {
+                    navController.navigate("search")
                 }
             )
         }
@@ -32,6 +36,15 @@ fun NavGraph(
             val movieId = backStackEntry.arguments?.getInt("movieId") ?: 0
             DetailsScreen(
                 movieId = movieId,
+                onBackClick = { navController.popBackStack() }
+            )
+        }
+
+        composable(route = "search") {
+            SearchScreen(
+                onMovieClick = { movieId ->
+                    navController.navigate("details/$movieId")
+                },
                 onBackClick = { navController.popBackStack() }
             )
         }

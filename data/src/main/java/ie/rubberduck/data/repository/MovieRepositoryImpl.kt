@@ -20,4 +20,7 @@ class MovieRepositoryImpl @Inject constructor(
     override suspend fun getMovieDetails(movieId: Int): MovieDetailsModel =
         client.getMovieDetails(movieId).toDomain()
 
+    override suspend fun searchMovies(query: String): List<MovieModel> =
+        client.searchMovies(query).results.map { it.toDomain() }
+
 }

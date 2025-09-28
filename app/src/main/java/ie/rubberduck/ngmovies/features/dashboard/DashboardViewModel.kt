@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ie.rubberduck.domain.usecase.GetPopularMoviesUseCase
 import ie.rubberduck.domain.usecase.GetTopRatedMoviesUseCase
-import ie.rubberduck.ngmovies.features.dashboard.MovieUiModelMapper.toUiModel
+import ie.rubberduck.ngmovies.features.mappers.MovieUiModelMapper.toUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

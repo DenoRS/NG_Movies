@@ -9,4 +9,6 @@ interface MovieRepository {
     suspend fun getTopRatedMovies(page: Int) : List<MovieModel>
 
     suspend fun getMovieDetails(movieId: Int) : MovieDetailsModel
+
+    suspend fun searchMovies(query: String): List<MovieModel>
 }
