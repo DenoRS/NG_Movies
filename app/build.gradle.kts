@@ -6,6 +6,13 @@ plugins {
     id("com.google.devtools.ksp")
 }
 
+//val tmdbApiKey: String = project.findProperty("TMDB_API_KEY") as? String
+//    ?: error("TMDB_API_KEY is missing from local.properties")
+//
+//val tmdbAccessToken: String = project.findProperty("TMDB_ACCESS_TOKEN") as? String
+//    ?: error("TMDB_ACCESS_TOKEN is missing from local.properties")
+
+
 android {
     namespace = "ie.rubberduck.ngmovies"
     compileSdk = 36
@@ -17,6 +24,12 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+//        val tmdbApiKey: String = project.findProperty("TMDB_API_KEY") as String
+//        val tmdbAccessToken: String = project.findProperty("TMDB_ACCESS_TOKEN") as String
+
+//        buildConfigField("String", "TMDB_API_KEY", "\"$tmdbApiKey\"")
+//        buildConfigField("String", "TMDB_ACCESS_TOKEN", "\"$tmdbAccessToken\"")
     }
 
     buildTypes {
@@ -79,11 +92,15 @@ dependencies {
     implementation(libs.room.runtime)
     ksp(libs.room.compiler)
 
+    // Moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.codegen)
+
     // Retrofit
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.moshi)
     implementation(libs.retrofit.converter.gson)
-    implementation("com.squareup.moshi:moshi-kotlin:1.15.0")
 
     // Coroutines
     implementation(libs.coroutines)

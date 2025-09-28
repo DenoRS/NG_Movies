@@ -4,7 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import ie.rubberduck.domain.interactor.GetMoviesInteractor
+import ie.rubberduck.domain.usecase.GetPopularMoviesUseCase
+import ie.rubberduck.domain.usecase.GetTopRatedMoviesUseCase
 import ie.rubberduck.ngmovies.features.dashboard.DashboardViewModel
 
 @Module
@@ -13,8 +14,12 @@ object ViewModelModule {
 
     @Provides
     fun provideDashboardViewModel(
-        getMoviesInteractor: GetMoviesInteractor,
+        getPopularMoviesUseCase: GetPopularMoviesUseCase,
+        getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
     ): DashboardViewModel {
-        return DashboardViewModel(getMoviesInteractor)
+        return DashboardViewModel(
+            getPopularMoviesUseCase = getPopularMoviesUseCase,
+            getTopRatedMoviesUseCase = getTopRatedMoviesUseCase,
+        )
     }
 }

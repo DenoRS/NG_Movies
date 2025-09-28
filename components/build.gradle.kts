@@ -48,6 +48,10 @@ android {
 dependencies {
     implementation(project(":theming"))
 
+    // Coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     implementation(libs.ui)
     implementation(libs.ui.graphics)
     implementation(libs.material3)

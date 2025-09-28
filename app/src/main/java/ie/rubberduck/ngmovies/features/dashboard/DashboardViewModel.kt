@@ -3,7 +3,8 @@ package ie.rubberduck.ngmovies.features.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import ie.rubberduck.domain.interactor.GetMoviesInteractor
+import ie.rubberduck.domain.usecase.GetPopularMoviesUseCase
+import ie.rubberduck.domain.usecase.GetTopRatedMoviesUseCase
 import ie.rubberduck.ngmovies.features.dashboard.MovieUiModelMapper.toUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val getMoviesInteractor: GetMoviesInteractor,
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase,
+    private val getTopRatedMoviesUseCase: GetTopRatedMoviesUseCase,
 ) : ViewModel() {
 
     private val _viewState = MutableStateFlow(DashboardViewState())
@@ -25,23 +27,39 @@ class DashboardViewModel @Inject constructor(
     }
 
     private fun getMovies() {
-        viewModelScope.launch {
-            _viewState.update { it.copy(uiState = DashboardUiState.Loading) }
+        getPopularMovies()
+        getTopRatedMovies()
+    }
 
-            try {
-                val movies = getMoviesInteractor()
-                val mappedMovies = movies.map { it.toUiModel() }
-                _viewState.update { it.copy(movies = mappedMovies) }
-            } catch (e: Exception) {
+    private fun getPopularMovies(page: Int = 1) {
+        viewModelScope.launch {
+            getPopularMoviesUseCase(page).collect { movies ->
                 _viewState.update {
                     it.copy(
-                        uiState = DashboardUiState.Error(
-                            errorMessage = e.message ?: "Something went wrong"
+                        popularUiState = MoviesUiState.Content(
+                            movies.map { movie ->
+                                movie.toUiModel()
+                            }
                         )
                     )
                 }
             }
+        }
+    }
 
+    private fun getTopRatedMovies(page: Int = 1) {
+        viewModelScope.launch {
+            getTopRatedMoviesUseCase(page).collect { movies ->
+                _viewState.update {
+                    it.copy(
+                        topRatedUiState = MoviesUiState.Content(
+                            movies.map { movie ->
+                                movie.toUiModel()
+                            }
+                        )
+                    )
+                }
+            }
         }
     }
 }

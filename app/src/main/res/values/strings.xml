@@ -2,11 +2,16 @@
     <string name="app_name">NG Movies</string>
 
     <!-- Dashboard -->
-    <string name="dashboard_title">NG Movies</string>
+    <string name="dashboard_appbar_title">NG Movies</string>
+    <string name="dashboard_title_most_popular">Most Popular</string>
+    <string name="dashboard_title_top_rated">Top Rated</string>
+
 
     <!-- Search -->
 
     <!-- Details -->
 
+    <!-- Content Description -->
+    <string name="content_desc_search">Search</string>
 
 </resources>
