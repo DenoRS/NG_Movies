@@ -29,13 +29,8 @@ fun MovieCard(
     onClick: () -> Unit = {},
 ) {
     Column(
-        modifier = modifier.also {
-            if (onClick != {}) {
-                Modifier.clickable { onClick() }
-            } else {
-                Modifier
-            }
-        },
+        modifier = modifier
+            .clickable(onClick = onClick),
     ) {
         Card(
             modifier = Modifier
@@ -43,7 +38,6 @@ fun MovieCard(
                 .width(120.dp),
             shape = RoundedCornerShape(12.dp),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-
         ) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
@@ -62,7 +56,7 @@ fun MovieCard(
             overflow = TextOverflow.Ellipsis,
         )
         Text(
-            text = "$rating ★",
+            text = "$rating ⭐",
             style = MaterialTheme.typography.bodySmall,
             color = Color.Gray
         )

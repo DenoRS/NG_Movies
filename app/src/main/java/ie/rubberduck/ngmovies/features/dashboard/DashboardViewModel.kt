@@ -26,9 +26,13 @@ class DashboardViewModel @Inject constructor(
         getMovies()
     }
 
-    private fun getMovies() {
+    internal fun getMovies() {
         getPopularMovies()
         getTopRatedMovies()
+    }
+
+    internal fun retry() {
+        getMovies()
     }
 
     private fun getPopularMovies(page: Int = 1) {
@@ -62,4 +66,5 @@ class DashboardViewModel @Inject constructor(
             }
         }
     }
+
 }
