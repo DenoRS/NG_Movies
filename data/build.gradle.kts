@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp")
 }
 
@@ -27,29 +28,15 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
-//    kotlinOptions {
-//        jvmTarget = "11"
-//    }
+
+    kotlin {
+        jvmToolchain(17)
+    }
+
 }
-//plugins {
-//    id("java-library")
-//    alias(libs.plugins.kotlin.android)
-//    id("com.google.devtools.ksp")
-//}
-//
-//java {
-//    sourceCompatibility = JavaVersion.VERSION_11
-//    targetCompatibility = JavaVersion.VERSION_11
-//}
-//
-//kotlin {
-//    compilerOptions {
-//        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
-//    }
-//}
 
 dependencies {
     implementation(project(":domain"))
@@ -67,9 +54,18 @@ dependencies {
     implementation(libs.room.ktx)
     testImplementation(libs.room.testing)
 
+    // Moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.codegen)
+
     // retrofit
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.moshi)
+    implementation(libs.okhttp)
+//    implementation(libs.logging.interceptor)
+//    implementation(libs.retrofit.kotlinx.serialization)
+    implementation(libs.kotlinx.serialization.json)
 //    implementation(libs.okhttp)
 //    implementation(libs.okhttp.logging)
 
