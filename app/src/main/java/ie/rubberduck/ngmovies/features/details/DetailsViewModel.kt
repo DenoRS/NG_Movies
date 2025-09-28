@@ -23,13 +23,26 @@ class DetailsViewModel @Inject constructor(
 
     fun getMovieDetails(movieId: Int) {
         viewModelScope.launch {
-            getMovieDetailsUseCase(movieId).collect { movie ->
+            _viewState.update {
+                it.copy(
+                    uiState = DetailsUiState.Loading,
+                    movieId = movieId,
+                )
+            }
+            try {
+                getMovieDetailsUseCase(movieId).collect { movie ->
+                    _viewState.update {
+                        it.copy(
+                            uiState = DetailsUiState.Content(movie.toUiModel()),
+                        )
+                    }
+                }
+            } catch (e: Exception) {
                 _viewState.update {
                     it.copy(
-                        uiState = DetailsUiState.Content(
-                            movie.toUiModel()
+                        uiState = DetailsUiState.Error(
+                            errorMessage = e.message ?: "Unknown error"
                         ),
-                        movieId = movieId
                     )
                 }
             }
