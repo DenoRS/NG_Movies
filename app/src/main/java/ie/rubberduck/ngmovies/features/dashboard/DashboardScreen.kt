@@ -28,6 +28,7 @@ import ie.rubberduck.ngmovies.features.dashboard.components.MovieRow
 fun DashboardScreen(
     viewModel: DashboardViewModel = hiltViewModel(),
     onMovieClick: (Int) -> Unit,
+    onSearchClick: () -> Unit,
 ) {
     val vmState = viewModel.viewState.collectAsStateWithLifecycle()
     Column(
@@ -36,7 +37,8 @@ fun DashboardScreen(
         NGTopAppBar(
             title = stringResource(R.string.dashboard_appbar_title),
             actionIcon = Icons.Filled.Search,
-            actionIconContentDescription = stringResource(R.string.content_desc_search)
+            actionIconContentDescription = stringResource(R.string.content_desc_search),
+            onActionClick = onSearchClick,
         )
         Spacer(modifier = Modifier.height(16.dp))
 

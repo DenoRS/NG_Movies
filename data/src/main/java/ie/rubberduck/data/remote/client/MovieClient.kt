@@ -10,4 +10,6 @@ interface MovieClient {
     suspend fun getTopRatedMovies(page: Int = 1): MovieResponseDto
 
     suspend fun getMovieDetails(movieId: Int): MovieDetailsResponseDto
+
+    suspend fun searchMovies(query: String): MovieResponseDto
 }

@@ -8,6 +8,7 @@ import ie.rubberduck.domain.repository.MovieRepository
 import ie.rubberduck.domain.usecase.GetMovieDetailsUseCase
 import ie.rubberduck.domain.usecase.GetPopularMoviesUseCase
 import ie.rubberduck.domain.usecase.GetTopRatedMoviesUseCase
+import ie.rubberduck.domain.usecase.SearchMoviesUseCase
 
 @Module
 @InstallIn(ViewModelComponent::class)
@@ -27,5 +28,10 @@ object UseCaseModule {
     fun provideGetMovieDetailsUseCase(
         repository: MovieRepository,
     ): GetMovieDetailsUseCase = GetMovieDetailsUseCase(repository)
+
+    @Provides
+    fun provideSearchMoviesUseCase(
+        repository: MovieRepository,
+    ): SearchMoviesUseCase = SearchMoviesUseCase(repository)
 
 }
