@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
     includes = [
         DataModule::class,
         RepositoryModule::class,
-        InteractorModule::class,
+        UseCaseModule::class,
         ViewModelModule::class,
     ]
 )

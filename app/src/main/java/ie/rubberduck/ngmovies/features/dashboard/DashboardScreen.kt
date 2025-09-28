@@ -1,8 +1,12 @@
 package ie.rubberduck.ngmovies.features.dashboard
 
+import NGTitleLargePrimary
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -13,14 +17,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import ie.rubberduck.components.common.LoadingView
+import ie.rubberduck.components.common.LoadingRow
 import ie.rubberduck.components.toolbar.NGTopAppBar
 import ie.rubberduck.ngmovies.R
 import ie.rubberduck.ngmovies.features.dashboard.components.MovieCard
+import ie.rubberduck.ngmovies.features.dashboard.components.MovieRow
 
 @OptIn(ExperimentalMaterial3Api::class)
 //@Preview(showBackground = true)
@@ -33,38 +37,43 @@ fun DashboardScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         NGTopAppBar(
-            title = stringResource(R.string.dashboard_title),
+            title = stringResource(R.string.dashboard_appbar_title),
             actionIcon = Icons.Filled.Search,
-            actionIconContentDescription = "Search"
+            actionIconContentDescription = stringResource(R.string.content_desc_search)
         )
+        Spacer(modifier = Modifier.height(16.dp))
 
-        when (vmState.value.uiState) {
-            DashboardUiState.Loading -> LoadingScreen()
-            DashboardUiState.Content -> ContentScreen(vmState.value.movies)
-            is DashboardUiState.Error -> ErrorScreen(vmState.value)
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+        ) {
+            // Most popular movies row
+            NGTitleLargePrimary(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.dashboard_title_most_popular)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            MoviesContent(vmState.value.popularUiState)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Top rated movies row
+            NGTitleLargePrimary(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.dashboard_title_top_rated)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            MoviesContent(vmState.value.topRatedUiState)
         }
 
+//        when (vmState.value.uiState) {
+//            DashboardUiState.Loading -> LoadingScreen()
+//            is DashboardUiState.Content -> ContentScreen(vmState.value.movies)
+//            is DashboardUiState.Error -> ErrorScreen(vmState.value)
+//        }
+
     }
-}
-
-@Composable
-private fun LoadingScreen() {
-    LoadingView()
-}
-
-@Composable
-private fun ContentScreen(
-    movies: List<MovieUiModel>
-) {
-    Column(
-        modifier = Modifier
-            .padding(horizontal = 16.dp, vertical = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "movies")
-    }
-
 }
 
 @Composable
@@ -78,14 +87,30 @@ private fun ErrorScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        MovieCard(
-            imageUrl = "https://dummyimage.com/250x250/cccccc/000000.png&text=Hello there",
-            title = "some movie",
-            duration = "2h 30m"
-        )
+//        MovieCard(
+//            imageUrl = "https://dummyimage.com/250x250/cccccc/000000.png&text=Hello there",
+//            title = "some movie",
+//            rating = "2h 30m"
+//        )
         Text(text = "something went wrong")
     }
+}
 
+@Composable
+fun MoviesContent(
+    uiState: MoviesUiState
+) {
+    when (uiState) {
+        MoviesUiState.Loading -> LoadingRow()
+
+        is MoviesUiState.Content -> {
+            MovieRow(uiState.movies)
+        }
+
+        is MoviesUiState.Error -> {
+            Text(text = uiState.errorMessage)
+        }
+    }
 }
 
 
@@ -93,22 +118,36 @@ internal class DashboardScreenPreviewParams : PreviewParameterProvider<Dashboard
     override val values: Sequence<DashboardViewState>
         get() = sequenceOf(
             DashboardViewState(
-                uiState = DashboardUiState.Loading
+                popularUiState = MoviesUiState.Loading,
+                topRatedUiState = MoviesUiState.Loading,
             ),
             DashboardViewState(
-                uiState = DashboardUiState.Content,
-                movies = listOf(
-                    MovieUiModel(
-                        title = "Movie 1",
-                        releaseDate = "25-09-2025",
-                        posterPath = "",
-                        overview = "",
-                        voteAverage = 4.5
+                popularUiState = MoviesUiState.Content(
+                    movies = listOf(
+                        MovieUiModel(
+                            title = "Movie 1",
+                            releaseDate = "25-09-2025",
+                            posterPath = "",
+                            overview = "",
+                            voteAverage = 4.5
+                        )
                     )
-                )
+                ),
+                topRatedUiState = MoviesUiState.Content(
+                    movies = listOf(
+                        MovieUiModel(
+                            title = "Movie 1",
+                            releaseDate = "25-09-2025",
+                            posterPath = "",
+                            overview = "",
+                            voteAverage = 4.5
+                        )
+                    )
+                ),
             ),
             DashboardViewState(
-                uiState = DashboardUiState.Error("some error")
+                popularUiState = MoviesUiState.Error("some error"),
+                topRatedUiState = MoviesUiState.Error("some error")
             )
         )
 }

@@ -9,11 +9,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import ie.rubberduck.ngmovies.ext.roundTo1Decimal
+import ie.rubberduck.ngmovies.features.dashboard.MovieUiModel
 
 @Composable
 fun MovieGrid(
-    movies: List<MovieModel>
-    // change to domain
+    movies: List<MovieUiModel>
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -23,19 +24,21 @@ fun MovieGrid(
     ) {
         items(movies) { movie ->
             MovieCard(
-                imageUrl = movie.imageUrl,
+                imageUrl = movie.posterPath,
                 title = movie.title,
-                duration = movie.duration
+                rating = movie.voteAverage.roundTo1Decimal().toString()
             )
         }
     }
 }
 
 private val sampleMoviesList = List(6) { index ->
-    MovieModel(
-        imageUrl = "https://dummyimage.com/250x250/cccccc/000000.png&text=Hello there $index",
+    MovieUiModel(
         title = "Movie #$index",
-        duration = "2h 30m",
+        overview = "overview",
+        posterPath = "https://dummyimage.com/250x250/cccccc/000000.png&text=Hello there $index",
+        releaseDate = "25-09-2025",
+        voteAverage = 2.5,
     )
 }
 

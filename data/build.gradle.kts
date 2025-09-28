@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     id("com.google.devtools.ksp")
 }
 
@@ -53,9 +54,18 @@ dependencies {
     implementation(libs.room.ktx)
     testImplementation(libs.room.testing)
 
+    // Moshi
+    implementation(libs.moshi)
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.codegen)
+
     // retrofit
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.moshi)
+    implementation(libs.okhttp)
+//    implementation(libs.logging.interceptor)
+//    implementation(libs.retrofit.kotlinx.serialization)
+    implementation(libs.kotlinx.serialization.json)
 //    implementation(libs.okhttp)
 //    implementation(libs.okhttp.logging)
 
