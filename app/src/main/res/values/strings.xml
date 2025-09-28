@@ -13,5 +13,6 @@
 
     <!-- Content Description -->
     <string name="content_desc_search">Search</string>
+    <string name="content_desc_arrow_back">Navigate Back</string>
 
 </resources>

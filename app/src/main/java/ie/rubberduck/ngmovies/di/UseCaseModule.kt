@@ -5,6 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import ie.rubberduck.domain.repository.MovieRepository
+import ie.rubberduck.domain.usecase.GetMovieDetailsUseCase
 import ie.rubberduck.domain.usecase.GetPopularMoviesUseCase
 import ie.rubberduck.domain.usecase.GetTopRatedMoviesUseCase
 
@@ -21,5 +22,10 @@ object UseCaseModule {
     fun provideGetTopRatedMoviesUseCase(
         repository: MovieRepository,
     ): GetTopRatedMoviesUseCase = GetTopRatedMoviesUseCase(repository)
+
+    @Provides
+    fun provideGetMovieDetailsUseCase(
+        repository: MovieRepository,
+    ): GetMovieDetailsUseCase = GetMovieDetailsUseCase(repository)
 
 }

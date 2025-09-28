@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Content Descriptions -->
+    <string name="content_desc_error">Error</string>
+
+    <!-- Common components -->
+    <string name="common_btn_retry">Retry</string>
+</resources>

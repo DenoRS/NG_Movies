@@ -34,6 +34,7 @@ fun MovieGrid(
 
 private val sampleMoviesList = List(6) { index ->
     MovieUiModel(
+        id = index,
         title = "Movie #$index",
         overview = "overview",
         posterPath = "https://dummyimage.com/250x250/cccccc/000000.png&text=Hello there $index",
