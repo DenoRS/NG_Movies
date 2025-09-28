@@ -37,13 +37,24 @@ class DashboardViewModel @Inject constructor(
 
     private fun getPopularMovies(page: Int = 1) {
         viewModelScope.launch {
-            getPopularMoviesUseCase(page).collect { movies ->
+            _viewState.update { it.copy(popularUiState = MoviesUiState.Loading) }
+            try {
+                getPopularMoviesUseCase(page).collect { movies ->
+                    _viewState.update {
+                        it.copy(
+                            popularUiState = MoviesUiState.Content(
+                                movies.map { movie ->
+                                    movie.toUiModel()
+                                }
+                            )
+                        )
+                    }
+                }
+            } catch (e: Exception) {
                 _viewState.update {
                     it.copy(
-                        popularUiState = MoviesUiState.Content(
-                            movies.map { movie ->
-                                movie.toUiModel()
-                            }
+                        popularUiState = MoviesUiState.Error(
+                            errorMessage = e.message ?: "Unknown error"
                         )
                     )
                 }
@@ -53,13 +64,24 @@ class DashboardViewModel @Inject constructor(
 
     private fun getTopRatedMovies(page: Int = 1) {
         viewModelScope.launch {
-            getTopRatedMoviesUseCase(page).collect { movies ->
+            _viewState.update { it.copy(topRatedUiState = MoviesUiState.Loading) }
+            try {
+                getTopRatedMoviesUseCase(page).collect { movies ->
+                    _viewState.update {
+                        it.copy(
+                            topRatedUiState = MoviesUiState.Content(
+                                movies.map { movie ->
+                                    movie.toUiModel()
+                                }
+                            )
+                        )
+                    }
+                }
+            } catch (e: Exception) {
                 _viewState.update {
                     it.copy(
-                        topRatedUiState = MoviesUiState.Content(
-                            movies.map { movie ->
-                                movie.toUiModel()
-                            }
+                        topRatedUiState = MoviesUiState.Error(
+                            errorMessage = e.message ?: "Unknown error"
                         )
                     )
                 }
