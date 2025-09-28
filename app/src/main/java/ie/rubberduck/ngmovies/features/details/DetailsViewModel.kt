@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import ie.rubberduck.domain.usecase.GetMovieDetailsUseCase
-import ie.rubberduck.ngmovies.features.dashboard.DashboardViewState
 import ie.rubberduck.ngmovies.features.details.MovieDetailsUiModelMapper.toUiModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
