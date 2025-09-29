@@ -3,10 +3,7 @@ package ie.rubberduck.data.remote.dto
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import ie.rubberduck.domain.models.MovieModel
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 
-//@Serializable
 @JsonClass(generateAdapter = true)
 data class MovieDto(
     @Json(name = "id") val id: Int,

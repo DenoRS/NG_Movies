@@ -35,7 +35,10 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
 
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
 
 dependencies {
@@ -45,8 +48,6 @@ dependencies {
 
     implementation(libs.hilt.android)
     annotationProcessor(libs.hilt.compiler)
-
-//    implementation(libs.androidx.core.ktx)
 
     // Room database
     implementation(libs.room.runtime)
@@ -63,13 +64,18 @@ dependencies {
     implementation(libs.retrofit.core)
     implementation(libs.retrofit.converter.moshi)
     implementation(libs.okhttp)
-//    implementation(libs.logging.interceptor)
-//    implementation(libs.retrofit.kotlinx.serialization)
-    implementation(libs.kotlinx.serialization.json)
-//    implementation(libs.okhttp)
-//    implementation(libs.okhttp.logging)
 
-//    testImplementation(libs.junit)
-//    androidTestImplementation(libs.androidx.junit)
-//    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.kotlinx.serialization.json)
+
+    // JUnit 5
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
+    testImplementation(libs.junit.jupiter.params)
+    testRuntimeOnly(libs.junit.platform.launcher)
+
+    // MockK for mocking
+    testImplementation(libs.mockk)
+
+    // Testing
+    testImplementation(libs.coroutines.test)
 }
