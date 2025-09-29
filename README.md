@@ -40,8 +40,8 @@ Follow these steps to set up and run the app locally:
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/denors/NGMovies.git
-cd NGMovies
+git clone https://github.com/denors/NG_Movies.git
+cd NG_Movies
 ```
 
 ### 2. Open in Android Studio
