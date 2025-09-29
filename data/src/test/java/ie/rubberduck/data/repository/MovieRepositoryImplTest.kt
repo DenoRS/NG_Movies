@@ -6,9 +6,13 @@ import ie.rubberduck.data.remote.dto.MovieDto
 import ie.rubberduck.data.remote.dto.MovieGenresDto
 import ie.rubberduck.data.remote.dto.MovieResponseDto
 import ie.rubberduck.data.remote.dto.toDomain
+import ie.rubberduck.data.room.dao.MovieDao
+import ie.rubberduck.data.room.entities.toEntity
 import ie.rubberduck.domain.models.MovieDetailsModel
 import ie.rubberduck.domain.models.MovieModel
+import io.mockk.clearAllMocks
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -16,27 +20,28 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MovieRepositoryImplTest {
 
     private lateinit var classUnderTest: MovieRepositoryImpl
     private val client: MovieClient = mockk()
+    private val dao: MovieDao = mockk(relaxed = true)
 
     @BeforeEach
     fun setUp() {
-        classUnderTest = MovieRepositoryImpl(client)
+        clearAllMocks()
+        classUnderTest = MovieRepositoryImpl(client = client, movieDao = dao)
     }
 
-    @Test
     @DisplayName(
         """
             GIVEN client returns popular movies
-            WHEN I call getPopularMovies
-            THEN I expect mapped domain models
+            WHEN I invoke getPopularMovies
+            THEN I expect mapped domain models and cache updated
         """
     )
+    @Test
     fun testGetPopularMovies() = runTest {
         // GIVEN
         val dto = MovieDto(
@@ -47,7 +52,9 @@ class MovieRepositoryImplTest {
             overview = "Action movie",
             voteAverage = 7.5
         )
-        coEvery { client.getPopularMovies(1) } returns MovieResponseDto(
+        coEvery {
+            client.getPopularMovies(1)
+        } returns MovieResponseDto(
             page = 1,
             results = listOf(dto),
             totalPages = 1,
@@ -61,16 +68,49 @@ class MovieRepositoryImplTest {
 
         // THEN
         assertEquals(expected, result)
+        coVerify { dao.clearAll() }
+        coVerify { dao.insertAll(expected.map { it.toEntity() }) }
     }
 
+    @DisplayName(
+        """
+            GIVEN client fails fetching popular movies
+            WHEN I invoke getPopularMovies
+            THEN I expect cached movies from dao
+        """
+    )
     @Test
+    fun testGetPopularMoviesFallback() = runTest {
+        // GIVEN
+        coEvery { client.getPopularMovies(1) } throws RuntimeException("Network error")
+        val cached = listOf(
+            MovieModel(
+                id = 10,
+                title = "Cached",
+                releaseDate = "2025-01-01",
+                posterPath = "/cached.jpg",
+                overview = "Cached movie",
+                voteAverage = 6.0,
+            ),
+        )
+        coEvery { dao.getAllMovies() } returns cached.map { it.toEntity() }
+
+        // WHEN
+        val result = classUnderTest.getPopularMovies(1)
+
+        // THEN
+        assertEquals(cached, result)
+        coVerify { dao.getAllMovies() }
+    }
+
     @DisplayName(
         """
             GIVEN client returns top rated movies
-            WHEN I call getTopRatedMovies
-            THEN I expect mapped domain models
+            WHEN I invoke getTopRatedMovies
+            THEN I expect mapped domain models and cache updated
         """
     )
+    @Test
     fun testGetTopRatedMovies() = runTest {
         // GIVEN
         val dto = MovieDto(
@@ -81,7 +121,9 @@ class MovieRepositoryImplTest {
             overview = "Sci-Fi action",
             voteAverage = 8.8
         )
-        coEvery { client.getTopRatedMovies(1) } returns MovieResponseDto(
+        coEvery {
+            client.getTopRatedMovies(1)
+        } returns MovieResponseDto(
             page = 1,
             results = listOf(dto),
             totalPages = 1,
@@ -95,16 +137,50 @@ class MovieRepositoryImplTest {
 
         // THEN
         assertEquals(expected, result)
+        coVerify { dao.clearAll() }
+        coVerify { dao.insertAll(expected.map { it.toEntity() }) }
     }
 
+    @DisplayName(
+        """
+            GIVEN client fails fetching top rated movies
+            WHEN I invoke getTopRatedMovies
+            THEN I expect cached movies from dao
+        """
+    )
     @Test
+    fun testGetTopRatedMoviesFallback() = runTest {
+        // GIVEN
+        coEvery { client.getTopRatedMovies(1) } throws RuntimeException("Network error")
+        val cached =
+            listOf(
+                MovieModel(
+                    id = 20,
+                    title = "Cached Top",
+                    releaseDate = "2019-01-01",
+                    posterPath = "/cached2.jpg",
+                    overview = "Top rated",
+                    voteAverage = 7.0,
+                ),
+            )
+        coEvery { dao.getAllMovies() } returns cached.map { it.toEntity() }
+
+        // WHEN
+        val result = classUnderTest.getTopRatedMovies(1)
+
+        // THEN
+        assertEquals(cached, result)
+        coVerify { dao.getAllMovies() }
+    }
+
     @DisplayName(
         """
             GIVEN client returns movie details
-            WHEN I call getMovieDetails
-            THEN I expect mapped domain model
+            WHEN I invoke getMovieDetails
+            THEN I expect mapped domain model and cache updated
         """
     )
+    @Test
     fun testGetMovieDetails() = runTest {
         // GIVEN
         val dto = MovieDetailsResponseDto(
@@ -116,10 +192,12 @@ class MovieRepositoryImplTest {
             posterPath = "/poster.jpg",
             overview = "Welcome to the real world.",
             voteAverage = 8.7,
-            genres = listOf(MovieGenresDto(1, "Sci-Fi"), MovieGenresDto(2, "Action"))
+            genres = listOf(
+                MovieGenresDto(id = 1, name = "Sci-Fi"),
+                MovieGenresDto(id = 2, name = "Action")
+            )
         )
         coEvery { client.getMovieDetails(42) } returns dto
-
         val expected = dto.toDomain()
 
         // WHEN
@@ -127,16 +205,49 @@ class MovieRepositoryImplTest {
 
         // THEN
         assertEquals(expected, result)
+        coVerify { dao.insertMovieDetails(expected.toEntity()) }
     }
 
+    @DisplayName(
+        """
+            GIVEN client fails fetching movie details
+            WHEN I invoke getMovieDetails
+            THEN I expect cached details from dao
+        """
+    )
     @Test
+    fun testGetMovieDetailsFallback() = runTest {
+        // GIVEN
+        coEvery { client.getMovieDetails(42) } throws RuntimeException("Network error")
+        val cached = MovieDetailsModel(
+            id = 42,
+            title = "Cached Matrix",
+            duration = 120,
+            releaseDate = "1999-01-01",
+            backdropPath = null,
+            posterPath = "/poster.jpg",
+            overview = "Cached overview",
+            voteAverage = 8.0,
+            genres = emptyList()
+        )
+        coEvery { dao.getMovieDetails(42) } returns cached.toEntity()
+
+        // WHEN
+        val result = classUnderTest.getMovieDetails(42)
+
+        // THEN
+        assertEquals(cached, result)
+        coVerify { dao.getMovieDetails(42) }
+    }
+
     @DisplayName(
         """
             GIVEN client returns search results
-            WHEN I call searchMovies
-            THEN I expect mapped domain models
+            WHEN I invoke searchMovies
+            THEN I expect mapped domain models and cache updated
         """
     )
+    @Test
     fun testSearchMovies() = runTest {
         // GIVEN
         val dto = MovieDto(
@@ -144,16 +255,17 @@ class MovieRepositoryImplTest {
             title = "Interstellar",
             releaseDate = "2014-11-07",
             posterPath = "/poster3.jpg",
-            overview = "Exploration beyond our galaxy",
+            overview = "Exploration",
             voteAverage = 8.6
         )
-        coEvery { client.searchMovies("Interstellar") } returns MovieResponseDto(
+        coEvery {
+            client.searchMovies("Interstellar")
+        } returns MovieResponseDto(
             page = 1,
             results = listOf(dto),
             totalPages = 1,
             totalResults = 1
         )
-
         val expected = listOf(dto.toDomain())
 
         // WHEN
@@ -161,24 +273,37 @@ class MovieRepositoryImplTest {
 
         // THEN
         assertEquals(expected, result)
+        coVerify { dao.insertAll(expected.map { it.toEntity() }) }
     }
 
-    @Test
     @DisplayName(
         """
-            GIVEN client throws exception
-            WHEN I call getPopularMovies
-            THEN I expect the exception to propagate
+            GIVEN client fails searching movies
+            WHEN I invoke searchMovies
+            THEN I expect cached search results from dao
         """
     )
-    fun testPropagatesException() = runTest {
+    @Test
+    fun testSearchMoviesFallback() = runTest {
         // GIVEN
-        coEvery { client.getPopularMovies(1) } throws RuntimeException("Network error")
+        coEvery { client.searchMovies("Query") } throws RuntimeException("Network error")
+        val cached = listOf(
+            MovieModel(
+                id = 99,
+                title = "Cached Search",
+                releaseDate = "2021-01-01",
+                posterPath = null,
+                overview = "Cached",
+                voteAverage = 5.5,
+            ),
+        )
+        coEvery { dao.searchMoviesByTitle("Query") } returns cached.map { it.toEntity() }
 
-        // WHEN & THEN
-        val thrown = assertThrows<RuntimeException> {
-            classUnderTest.getPopularMovies(1)
-        }
-        assertEquals("Network error", thrown.message)
+        // WHEN
+        val result = classUnderTest.searchMovies("Query")
+
+        // THEN
+        assertEquals(cached, result)
+        coVerify { dao.searchMoviesByTitle("Query") }
     }
 }

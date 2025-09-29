@@ -46,13 +46,8 @@ object DataModule {
     }
 
     @Provides
-    fun provideMovieDatabase(@ApplicationContext context: Context): MovieDatabase {
-        return MovieDatabase.getDatabase(context)
-    }
-
-    @Provides
     @Singleton
-    fun db(@ApplicationContext context: Context): MovieDatabase =
+    fun provideMovieDatabase(@ApplicationContext context: Context): MovieDatabase =
         Room.databaseBuilder(
             context,
             MovieDatabase::class.java,
@@ -61,7 +56,7 @@ object DataModule {
 
     @Provides
     @Singleton
-    fun movieDao(db: MovieDatabase) = db.movieDao()
+    fun provideMovieDao(db: MovieDatabase) = db.movieDao()
 
     @Provides
     fun provideOkHttpClient(authInterceptor: AuthInterceptor): OkHttpClient =
