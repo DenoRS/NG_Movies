@@ -4,14 +4,23 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import ie.rubberduck.data.room.converters.GenreTypeConverter
 import ie.rubberduck.data.room.dao.MovieDao
+import ie.rubberduck.data.room.entities.MovieDetailsEntity
 import ie.rubberduck.data.room.entities.MovieEntity
+import ie.rubberduck.data.room.entities.MovieGenresEntity
 
 @Database(
-    entities = [MovieEntity::class],
+    entities = [
+        MovieEntity::class,
+        MovieDetailsEntity::class,
+        MovieGenresEntity::class,
+    ],
     version = 1,
     exportSchema = false
 )
+@TypeConverters(GenreTypeConverter::class)
 abstract class MovieDatabase : RoomDatabase() {
 
     abstract fun movieDao(): MovieDao

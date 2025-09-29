@@ -19,10 +19,6 @@ class SearchViewModel @Inject constructor(
     private val _viewState = MutableStateFlow(SearchViewState())
     val viewState: StateFlow<SearchViewState> = _viewState
 
-//    fun onQueryChanged(query: String) {
-//        _viewState.update { it.copy(query = query) }
-//    }
-
     fun searchMovies(query: String) {
         if (query.isBlank()) return
         viewModelScope.launch {
