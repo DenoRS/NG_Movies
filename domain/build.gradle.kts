@@ -14,6 +14,10 @@ kotlin {
     }
 }
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 dependencies {
     implementation(libs.javax.inject)
     implementation(libs.coroutines)
@@ -22,8 +26,12 @@ dependencies {
     testImplementation(libs.junit.jupiter.api)
     testRuntimeOnly(libs.junit.jupiter.engine)
     testImplementation(libs.junit.jupiter.params)
+    testRuntimeOnly(libs.junit.platform.launcher)
 
     // MockK for mocking
     testImplementation(libs.mockk)
-//    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Testing
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.turbine)
 }
